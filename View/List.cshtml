@@ -1,0 +1,35 @@
+﻿@model List<DAL.Image>
+@{
+    ViewBag.Title = "List";
+}
+
+<table id="customers">
+    
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <img src="~/Images/@item.Name" width="100" height="auto" />
+            </td>
+            <td>
+                <button class="btn-success" onclick="Delete(@item.Id)">Delete</button>
+            </td>
+        </tr>
+    }
+
+</table>
+<script>
+   
+    function Delete(GetName) {
+        if (true == confirm(GetName + ' Silmek istediğinizden emin misiniz?')) {
+            $.post("../WebImage/List", { id: GetName },
+                function (data, status) {
+                    window.open("../WebImage/List", '_self');
+                });
+        }    
+    }
+
+</script>

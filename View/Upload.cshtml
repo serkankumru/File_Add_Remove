@@ -1,0 +1,53 @@
+﻿@model News.Models.ImageViewModel
+@{
+    ViewBag.Title = "Upload";
+}
+
+<h2>Upload</h2>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+<script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
+<script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
+<link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet" />
+<script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+
+<form id="uploadform" enctype="multipart/form-data">
+    <input type="text" asp-for="Name" />
+    <input type="file" class="filepond" asp-for="photos">
+    <button type="submit" class="uploadbtn">Upload Document</button>
+    <label class="col-md-offset-2 col-md-10 text-success"id="succ"></label>
+</form>
+<script>
+    $(document).ready(function (e) {
+        pond = FilePond.create(
+            document.querySelector('.filepond'), {
+            allowMultiple: true,
+            instantUpload: false,
+            allowProcess: false
+        });
+
+        $("#uploadform").submit(function (e) {
+            e.preventDefault();
+            var formdata = new FormData(this);
+            // append FilePond files into the form data
+            pondFiles = pond.getFiles();
+            for (var i = 0; i < pondFiles.length; i++) {
+                // append the blob file
+                formdata.append('files', pondFiles[i].file);
+            }
+
+            $.ajax({
+                url: "/WebImage/UploadJson",//Upload
+                data : formdata,
+                processData: false,
+                contentType: false,
+                method: "post",
+                success: function (data) {
+                    document.getElementById("succ").innerHTML = data;
+                    //alert(data);
+                }
+            });
+
+        })
+    });
+</script>
